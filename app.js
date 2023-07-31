@@ -24,18 +24,20 @@ app.use(bodyParser.json())
 app.post('/', async (req, res) => {
   const {filename, base64Content} = req.body
 
-  const result = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: `${ROOT_PATH}/${filename}`,
-    message: `:low_brightness: Created ${filename}`,
-    committer: COMMITTER,
-    content: base64Content,
-    sha: '0d5a690c8fad5e605a6e8766295d9d459d65de42',
-    headers: HEADERS_2022_11_28
-  })
-
-  res.json(result);
+  try {
+    const result = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+      owner: OWNER,
+      repo: REPO,
+      path: `${ROOT_PATH}/${filename}`,
+      message: `:low_brightness: Created ${filename}`,
+      committer: COMMITTER,
+      content: base64Content,
+      headers: HEADERS_2022_11_28
+    })
+    res.json(result);
+  } catch (e) {
+    res.json(e)
+  }
 });
 
 // Update file contents
@@ -43,44 +45,54 @@ app.put('/:filename/:sha', async (req, res) => {
   const {filename, sha} = req.params
   const {base64Content} = req.body
 
-  const result = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: `${ROOT_PATH}/${filename}`,
-    message: `:hammer: Updated ${filename}`,
-    committer: COMMITTER,
-    content: base64Content,
-    sha,
-    headers: HEADERS_2022_11_28
-  })
+  try {
+    const result = await octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+      owner: OWNER,
+      repo: REPO,
+      path: `${ROOT_PATH}/${filename}`,
+      message: `:hammer: Updated ${filename}`,
+      committer: COMMITTER,
+      content: base64Content,
+      sha,
+      headers: HEADERS_2022_11_28
+    })
+    res.json(result);
+  } catch (e) {
+    res.json(e)
+  }
 
-  res.json(result);
 });
 
 // Get repository content
 app.get('/:filename', async (req, res) => {
   const {filename} = req.params
 
-  const result = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: filename ? `${ROOT_PATH}/${filename}` : '/',
-    headers: HEADERS_2022_11_28
-  })
-
-  res.json(result);
+  try {
+    const result = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+      owner: OWNER,
+      repo: REPO,
+      path: filename ? `${ROOT_PATH}/${filename}` : '/',
+      headers: HEADERS_2022_11_28
+    })
+    res.json(result);
+  } catch (e) {
+    res.json(e)
+  }
 });
 
 // Get repository content list
 app.get('/', async (req, res) => {
-  const result = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: ROOT_PATH,
-    headers: HEADERS_2022_11_28
-  })
-
-  res.json(result);
+  try {
+    const result = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+      owner: OWNER,
+      repo: REPO,
+      path: ROOT_PATH,
+      headers: HEADERS_2022_11_28
+    })
+    res.json(result);
+  } catch (e) {
+    res.json(e)
+  }
 });
 
 
@@ -88,17 +100,20 @@ app.get('/', async (req, res) => {
 app.delete('/:filename/:sha', async (req, res) => {
   const {filename, sha} = req.params
 
-  const result = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: `${ROOT_PATH}/${filename}`,
-    message: `:x: Deleted ${filename}`,
-    committer: COMMITTER,
-    sha,
-    headers: HEADERS_2022_11_28
-  })
-
-  res.json(result);
+  try {
+    const result = await octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
+      owner: OWNER,
+      repo: REPO,
+      path: `${ROOT_PATH}/${filename}`,
+      message: `:x: Deleted ${filename}`,
+      committer: COMMITTER,
+      sha,
+      headers: HEADERS_2022_11_28
+    })
+    res.json(result);
+  } catch (e) {
+    res.json(e)
+  }
 });
 
 const PORT = 8080
