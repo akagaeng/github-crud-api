@@ -1,1 +1,5 @@
-my new file contents
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: some name
