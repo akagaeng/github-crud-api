@@ -17,10 +17,27 @@
 
 ## Getting Started
 
-### Create and edit `.env`
+### Create `.env`
 
 ```shell
 cp .env.sample .env
+```
+
+### Edit `.env`
+
+```shell
+# Generate token at https://github.com/settings/tokens
+GITHUB_TOKEN=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
+# GitHub owner or organization name
+OWNER=akagaeng
+# GitHub repo name
+REPO=github-crud-api
+# Root path where you commit
+ROOT_PATH=app
+# Committer name
+COMMITTER_NAME=akagaeng
+# Committer email
+COMMITTER_EMAIL=akagaeng@gmail.com
 ```
 
 ### Run
