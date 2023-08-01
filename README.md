@@ -25,6 +25,8 @@ cp .env.sample .env
 
 ### Edit `.env`
 
+| Replace `.env` into yours
+
 ```shell
 # Generate token at https://github.com/settings/tokens
 GITHUB_TOKEN=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
