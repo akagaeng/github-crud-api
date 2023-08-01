@@ -2,7 +2,8 @@
 
 ## Prerequisites
 
-* GitHub access token (with `repo` and `workflow` scope)
+* GitHub Personal access token (with `repo` and `workflow` scope)
+  * https://github.com/settings/tokens
   * with the `repo` scope: Get, list repository contents / Delete a file
   * with the `workflow` scope: Create or update file contents
 
@@ -13,6 +14,25 @@
   * Get/List
   * Delete
 * Using [octokit](https://github.com/octokit/octokit.js)
+
+## Getting Started
+
+### Create and edit `.env`
+
+```shell
+cp .env.sample .env
+```
+
+### Run
+
+```shell
+# Development
+npm run dev
+
+# Production
+npm start
+
+```
 
 ## Cheat Sheet
 
