@@ -12,8 +12,8 @@
     "type": "git",
     "url": "git+https://github.com/akagaeng/github-crud-api.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "akagaeng<akagaeng@gmail.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/akagaeng/github-crud-api/issues"
   },
