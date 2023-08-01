@@ -65,7 +65,7 @@ const encoded = Buffer.from(utf8Content).toString('base64')
 
 ## References
 
-* https://github.com/octokit/plugin-rest-endpoint-methods.js
+* https://www.npmjs.com/package/octokit
 * https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#delete-a-file
 * Base64 Encode: https://emn178.github.io/online-tools/base64_encode.html
 * Base64 Decode: https://emn178.github.io/online-tools/base64_decode.html
