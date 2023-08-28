@@ -21,8 +21,8 @@
 |--------|-----------------|-------------------------|-----------------------------|
 | POST   | /               | base64Content, filename | Create file contents        |
 | PUT    | /:filename/:sha | base64Content           | Update file contents        |
-| GET    | /:filename      | -                       | Get repository content      |
 | GET    | /               | -                       | Get repository content list |
+| GET    | /:filename      | -                       | Get repository content      |
 | DELETE | /:filename/:sha | -                       | Delete a file               |
 
 ## Getting Started
