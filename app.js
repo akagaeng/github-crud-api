@@ -75,7 +75,7 @@ app.put('/:filename/:sha', async (req, res) => {
 
 // Get repository content list
 app.get('/', async (req, res) => {
-  const { branch } = req.query
+  const { branch: ref } = req.query
 
   try {
     const result = await octokit.request(
@@ -84,7 +84,7 @@ app.get('/', async (req, res) => {
         owner: OWNER,
         repo: REPO,
         path: ROOT_PATH,
-        branch,
+        ref,
         headers: HEADERS_2022_11_28,
       }
     )
@@ -97,7 +97,7 @@ app.get('/', async (req, res) => {
 // Get repository content
 app.get('/:filename', async (req, res) => {
   const { filename } = req.params
-  const { branch } = req.query
+  const { branch: ref } = req.query
 
   try {
     const result = await octokit.request(
@@ -106,7 +106,7 @@ app.get('/:filename', async (req, res) => {
         owner: OWNER,
         repo: REPO,
         path: filename ? `${ROOT_PATH}/${filename}` : '/',
-        branch,
+        ref,
         headers: HEADERS_2022_11_28,
       }
     )
