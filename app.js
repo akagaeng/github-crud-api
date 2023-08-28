@@ -25,7 +25,7 @@ app.use(bodyParser.json())
 
 // Create file contents
 app.post('/', async (req, res) => {
-  const { filename, base64Content } = req.body
+  const { filename, base64Content, branch } = req.body
 
   try {
     const result = await octokit.request(
@@ -35,6 +35,7 @@ app.post('/', async (req, res) => {
         repo: REPO,
         path: `${ROOT_PATH}/${filename}`,
         message: `:low_brightness: Created ${filename}`,
+        branch,
         committer: COMMITTER,
         content: base64Content,
         headers: HEADERS_2022_11_28,
@@ -49,7 +50,7 @@ app.post('/', async (req, res) => {
 // Update file contents
 app.put('/:filename/:sha', async (req, res) => {
   const { filename, sha } = req.params
-  const { base64Content } = req.body
+  const { base64Content, branch } = req.body
 
   try {
     const result = await octokit.request(
@@ -59,6 +60,7 @@ app.put('/:filename/:sha', async (req, res) => {
         repo: REPO,
         path: `${ROOT_PATH}/${filename}`,
         message: `:hammer: Updated ${filename}`,
+        branch,
         committer: COMMITTER,
         content: base64Content,
         sha,
@@ -71,9 +73,9 @@ app.put('/:filename/:sha', async (req, res) => {
   }
 })
 
-// Get repository content
-app.get('/:filename', async (req, res) => {
-  const { filename } = req.params
+// Get repository content list
+app.get('/', async (req, res) => {
+  const { branch } = req.query
 
   try {
     const result = await octokit.request(
@@ -81,7 +83,8 @@ app.get('/:filename', async (req, res) => {
       {
         owner: OWNER,
         repo: REPO,
-        path: filename ? `${ROOT_PATH}/${filename}` : '/',
+        path: ROOT_PATH,
+        branch,
         headers: HEADERS_2022_11_28,
       }
     )
@@ -91,15 +94,19 @@ app.get('/:filename', async (req, res) => {
   }
 })
 
-// Get repository content list
-app.get('/', async (req, res) => {
+// Get repository content
+app.get('/:filename', async (req, res) => {
+  const { filename } = req.params
+  const { branch } = req.query
+
   try {
     const result = await octokit.request(
       'GET /repos/{owner}/{repo}/contents/{path}',
       {
         owner: OWNER,
         repo: REPO,
-        path: ROOT_PATH,
+        path: filename ? `${ROOT_PATH}/${filename}` : '/',
+        branch,
         headers: HEADERS_2022_11_28,
       }
     )
@@ -112,6 +119,7 @@ app.get('/', async (req, res) => {
 // Delete a file
 app.delete('/:filename/:sha', async (req, res) => {
   const { filename, sha } = req.params
+  const { branch } = req.query
 
   try {
     const result = await octokit.request(
@@ -123,6 +131,7 @@ app.delete('/:filename/:sha', async (req, res) => {
         message: `:x: Deleted ${filename}`,
         committer: COMMITTER,
         sha,
+        branch,
         headers: HEADERS_2022_11_28,
       }
     )
