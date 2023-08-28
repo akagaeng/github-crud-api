@@ -15,6 +15,16 @@
   * Delete
 * Using [octokit](https://github.com/octokit/octokit.js)
 
+## API List
+
+| Method | Path            | Request Body            | Description                 |
+|--------|-----------------|-------------------------|-----------------------------|
+| POST   | /               | base64Content, filename | Create file contents        |
+| PUT    | /:filename/:sha | base64Content           | Update file contents        |
+| GET    | /:filename      | -                       | Get repository content      |
+| GET    | /               | -                       | Get repository content list |
+| DELETE | /:filename/:sha | -                       | Delete a file               |
+
 ## Getting Started
 
 ### Create `.env`
