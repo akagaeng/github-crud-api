@@ -17,13 +17,13 @@
 
 ## API List
 
-| Method | Path            | Request Body            | Description                 |
-|--------|-----------------|-------------------------|-----------------------------|
-| POST   | /               | base64Content, filename | Create file contents        |
-| PUT    | /:filename/:sha | base64Content           | Update file contents        |
-| GET    | /               | -                       | Get repository content list |
-| GET    | /:filename      | -                       | Get repository content      |
-| DELETE | /:filename/:sha | -                       | Delete a file               |
+| Method | Path            | Request Body                      | Query  | Description                 |
+|--------|-----------------|-----------------------------------|--------|-----------------------------|
+| POST   | /               | *base64Content, *filename, branch | -      | Create file contents        |
+| PUT    | /:filename/:sha | *base64Content, branch            | -      | Update file contents        |
+| GET    | /               | -                                 | branch | Get repository content list |
+| GET    | /:filename      | -                                 | branch | Get repository content      |
+| DELETE | /:filename/:sha | -                                 | branch | Delete a file               |
 
 ## Getting Started
 
