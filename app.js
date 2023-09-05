@@ -163,8 +163,9 @@ app.delete('/dir/:dirName', async (req, res) => {
       return { path: d.path, sha: d.sha }
     })
 
-    const prom = deleteFiles.map((f) => deleteFile(f.path, f.sha, { branch }))
-    await Promise.all(prom)
+    await Promise.all(
+      deleteFiles.map((f) => deleteFile(f.path, f.sha, { branch }))
+    )
 
     res.json({
       status: 200,
