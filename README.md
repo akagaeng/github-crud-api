@@ -10,20 +10,24 @@
 ## Description
 
 * CRUD REST apis
-  * Create or update
-  * Get/List
-  * Delete
+  * Create or update file
+  * Get/List file
+  * Delete file
+  * Delete a directory: deleting all files in a directory deletes the directory
 * Using [octokit](https://github.com/octokit/octokit.js)
 
 ## API List
 
-| Method | Path            | Request Body                      | Query  | Description                 |
-|--------|-----------------|-----------------------------------|--------|-----------------------------|
-| POST   | /               | *base64Content, *filename, branch | -      | Create file contents        |
-| PUT    | /:filename/:sha | *base64Content, branch            | -      | Update file contents        |
-| GET    | /               | -                                 | branch | Get repository content list |
-| GET    | /:filename      | -                                 | branch | Get repository content      |
-| DELETE | /:filename/:sha | -                                 | branch | Delete a file               |
+| Method | Path           | Request Body                      | Query             | Description                 |
+|--------|----------------|-----------------------------------|-------------------|-----------------------------|
+| POST   | /              | *filename, *base64Content, branch | -                 | Create file contents        |
+| PUT    | /              | *filename, *base64Content, branch | -                 | Update file contents        |
+| GET    | /              | -                                 | branch            | Get repository content list |
+| GET    | /              | -                                 | *filename, branch | Get repository content      |
+| DELETE | /              | -                                 | *filename, branch | Delete a file               |
+| DELETE | /directory     | -                                 | *dirName, branch  | Delete a directory          |
+| POST   | /base64/encode | *content                          | -                 | Encode Base64               |
+| POST   | /base64/decode | *base64Content                    | -                 | Decode Base64               |
 
 ## Getting Started
 
@@ -61,18 +65,6 @@ npm run dev
 # Production
 npm start
 
-```
-
-## Cheat Sheet
-
-### Base 64 Encode / Decode from code
-
-```shell
-# Decode (base64 -> utf8
-const decoded = Buffer.from(base64Content, "base64").toString('utf8');
-
-# Encode (utf-8 -> base64)
-const encoded = Buffer.from(utf8Content).toString('base64')
 ```
 
 ## References
