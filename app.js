@@ -150,6 +150,31 @@ app.delete('/:filename/:sha', async (req, res) => {
   }
 })
 
+// Delete a directory (delete all files under the directory)
+app.delete('/dir/:dirName', async (req, res) => {
+  const { dirName } = req.params
+  const { branch } = req.query
+
+  try {
+    const path = `${ROOT_PATH}/${dirName}`
+    const { data } = await getFileContent(path, { ref: branch })
+
+    const deleteFiles = data.map((d) => {
+      return { path: d.path, sha: d.sha }
+    })
+
+    const prom = deleteFiles.map((f) => deleteFile(f.path, f.sha, { branch }))
+    await Promise.all(prom)
+
+    res.json({
+      status: 200,
+      message: `deleted all files in the ${dirName}`,
+    })
+  } catch (e) {
+    res.json(e)
+  }
+})
+
 const PORT = 8080
 
 app.listen(PORT, () => {
