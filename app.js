@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 app.use(bodyParser.json())
 
-const createFileContent = (path, base64Content, { branch }) => {
+const createFileContent = async (path, base64Content, { branch }) => {
   return octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
     owner: OWNER,
     repo: REPO,
@@ -35,6 +35,56 @@ const createFileContent = (path, base64Content, { branch }) => {
     headers: HEADERS_2022_11_28,
   })
 }
+
+const updateFileContent = async (path, base64Content, { branch }) => {
+  const { data } = await getFileContent({ path, ref: branch })
+
+  return octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
+    owner: OWNER,
+    repo: REPO,
+    path: path,
+    message: `:hammer: Updated ${path}`,
+    branch,
+    committer: COMMITTER,
+    content: base64Content,
+    sha: data?.sha,
+    headers: HEADERS_2022_11_28,
+  })
+}
+
+const getFileContent = async ({ path, ref }) => {
+  return octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
+    owner: OWNER,
+    repo: REPO,
+    path,
+    ref,
+    headers: HEADERS_2022_11_28,
+  })
+}
+
+const deleteFile = async (path, { branch }) => {
+  const { data } = await getFileContent({ path, ref: branch })
+
+  return octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
+    owner: OWNER,
+    repo: REPO,
+    path,
+    message: `:x: Deleted ${path}`,
+    committer: COMMITTER,
+    sha: data?.sha,
+    branch,
+    headers: HEADERS_2022_11_28,
+  })
+}
+
+const deleteDirectory = async (path, { branch }) => {
+  const { data } = await getFileContent({ path, ref: branch })
+
+  return Promise.all(
+    data.map((d) => d.path).map((path) => deleteFile(path, { branch }))
+  )
+}
+
 // Create file contents
 app.post('/', async (req, res) => {
   const { filename, base64Content, branch } = req.body
@@ -48,100 +98,52 @@ app.post('/', async (req, res) => {
   }
 })
 
-const updateFileContent = (path, base64Content, sha, { branch }) => {
-  return octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: path,
-    message: `:hammer: Updated ${path}`,
-    branch,
-    committer: COMMITTER,
-    content: base64Content,
-    sha,
-    headers: HEADERS_2022_11_28,
-  })
-}
-
 // Update file contents
-app.put('/:filename/:sha', async (req, res) => {
-  const { filename, sha } = req.params
-  const { base64Content, branch } = req.body
+app.put('/', async (req, res) => {
+  const { filename, base64Content, branch } = req.body
 
   try {
     const path = `${ROOT_PATH}/${filename}`
-    const result = await updateFileContent(path, base64Content, sha, { branch })
+    const result = await updateFileContent(path, base64Content, { branch })
     res.json(result)
   } catch (e) {
     res.json(e)
   }
 })
-
-const getFileList = ({ ref }) => {
-  return octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path: ROOT_PATH,
-    ref,
-    headers: HEADERS_2022_11_28,
-  })
-}
 
 // Get repository content list
 app.get('/', async (req, res) => {
-  const { branch } = req.query
-
-  try {
-    const result = await getFileList({ ref: branch })
-    res.json(result)
-  } catch (e) {
-    res.json(e)
-  }
-})
-
-const getFileContent = async (path, { ref }) => {
-  return octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path,
-    ref,
-    headers: HEADERS_2022_11_28,
-  })
-}
-// Get repository content
-app.get('/:filename', async (req, res) => {
-  const { filename } = req.params
-  const { branch } = req.query
+  const { filename, branch } = req.query
 
   try {
     const path = filename ? `${ROOT_PATH}/${filename}` : ROOT_PATH
-    const result = await getFileContent(path, { ref: branch })
+    const result = await getFileContent({ path, ref: branch })
     res.json(result)
   } catch (e) {
     res.json(e)
   }
 })
 
-const deleteFile = (path, sha, { branch }) => {
-  return octokit.request('DELETE /repos/{owner}/{repo}/contents/{path}', {
-    owner: OWNER,
-    repo: REPO,
-    path,
-    message: `:x: Deleted ${path}`,
-    committer: COMMITTER,
-    sha,
-    branch,
-    headers: HEADERS_2022_11_28,
-  })
-}
+// Get repository content
+app.get('/', async (req, res) => {
+  const { filename, branch } = req.query
+
+  try {
+    const path = filename ? `${ROOT_PATH}/${filename}` : ROOT_PATH
+    const result = await getFileContent({ path, ref: branch })
+    res.json(result)
+  } catch (e) {
+    res.json(e)
+  }
+})
 
 // Delete a file
-app.delete('/:filename/:sha', async (req, res) => {
-  const { filename, sha } = req.params
-  const { branch } = req.query
+app.delete('/', async (req, res) => {
+  const { filename, branch } = req.query
 
   try {
     const path = `${ROOT_PATH}/${filename}`
-    const result = await deleteFile(path, sha, {
+    const result = await deleteFile(path, {
       branch,
     })
     res.json(result)
@@ -151,25 +153,16 @@ app.delete('/:filename/:sha', async (req, res) => {
 })
 
 // Delete a directory (delete all files under the directory)
-app.delete('/dir/:dirName', async (req, res) => {
-  const { dirName } = req.params
-  const { branch } = req.query
+app.delete('/directory', async (req, res) => {
+  const { dirName, branch } = req.query
 
   try {
     const path = `${ROOT_PATH}/${dirName}`
-    const { data } = await getFileContent(path, { ref: branch })
-
-    const deleteFiles = data.map((d) => {
-      return { path: d.path, sha: d.sha }
-    })
-
-    await Promise.all(
-      deleteFiles.map((f) => deleteFile(f.path, f.sha, { branch }))
-    )
+    await deleteDirectory(path, { branch })
 
     res.json({
       status: 200,
-      message: `deleted all files in the ${dirName}`,
+      message: `Deleted the directory ${dirName}`,
     })
   } catch (e) {
     res.json(e)
