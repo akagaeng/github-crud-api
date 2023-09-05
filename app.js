@@ -169,6 +169,38 @@ app.delete('/directory', async (req, res) => {
   }
 })
 
+// BASE64
+
+// Encode BASE64
+app.post('/base64/encode', async (req, res) => {
+  const { content } = req.body
+
+  try {
+    res.json({
+      status: 200,
+      message: 'base64 encoded',
+      data: btoa(content),
+    })
+  } catch (e) {
+    res.json(e)
+  }
+})
+
+// Decode BASE64
+app.post('/base64/decode', async (req, res) => {
+  const { base64Content } = req.body
+
+  try {
+    res.json({
+      status: 200,
+      message: 'base64 decoded',
+      data: atob(base64Content),
+    })
+  } catch (e) {
+    res.json(e)
+  }
+})
+
 const PORT = 8080
 
 app.listen(PORT, () => {
