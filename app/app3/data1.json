@@ -1,0 +1,23 @@
+{
+      "appName": "SAASLauncherClinic",
+      "hostname": "saaslauncherclinic.icloudhospital.com",
+      "env": {
+        "STS_CLIENT_ID": "SomeClinic",
+        "STS_CLIENT_SECRET": "SomeClinicSecret",
+        "HOSPITAL_NAME": "Some Clinic",
+        "COLOR_PRIMARY": "9D7126",
+        "COLOR_SECONDARY": "F6F6F6",
+        "COLOR_NEUTRAL": "F6F6F6",
+        "COLOR_DARK": "F6F6F6",
+        "COLOR_LIGHT": "F6F6F6",
+        "NEXTAUTH_URL": "https://hospital.icloudhospital.com",
+        "HOSPITAL_ID": "9e13212d-ccba-4760-a26c-ccf38ff126e6",
+        "STORAGE_NAME": "srps",
+        "TEMPLATE": "ps-template",
+        "DEFAULT_LOCALE": "en",
+        "REGISTRY_REPO": "ps-template",
+        "GOOGLE_CLIENT_ID": "xxxxx-xxxxxx.apps.googleusercontent.com",
+        "GTMID": "X00XX0X",
+        "NAVER_SITE_VERIFICATION_ID": "a0000111122223333444455556666777788889999"
+      }
+    }
