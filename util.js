@@ -2,7 +2,7 @@ exports.base64Encode = content => {
   let encodedContent
 
   if (typeof content === 'object') {
-    encodedContent = btoa(JSON.stringify(content))
+    encodedContent = JSON.stringify(content)
   } else {
     encodedContent = content
   }
