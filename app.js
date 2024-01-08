@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const { Octokit } = require('octokit')
 require('dotenv').config()
+const { base64Encode, base64Decode } = require('./util')
 
 const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
@@ -81,7 +82,7 @@ const deleteDirectory = async (path, { branch }) => {
   const { data } = await getFileContent({ path, ref: branch })
 
   return Promise.all(
-    data.map((d) => d.path).map((path) => deleteFile(path, { branch }))
+    data.map((d) => d.path).map((path) => deleteFile(path, { branch })),
   )
 }
 
@@ -174,12 +175,13 @@ app.delete('/directory', async (req, res) => {
 // Encode BASE64
 app.post('/base64/encode', async (req, res) => {
   const { content } = req.body
+  const data = base64Encode(content)
 
   try {
     res.json({
       status: 200,
       message: 'base64 encoded',
-      data: btoa(content),
+      data,
     })
   } catch (e) {
     res.json(e)
@@ -189,12 +191,13 @@ app.post('/base64/encode', async (req, res) => {
 // Decode BASE64
 app.post('/base64/decode', async (req, res) => {
   const { base64Content } = req.body
+  const data = base64Decode(base64Content)
 
   try {
     res.json({
       status: 200,
       message: 'base64 decoded',
-      data: atob(base64Content),
+      data,
     })
   } catch (e) {
     res.json(e)
